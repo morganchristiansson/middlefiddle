@@ -21,7 +21,7 @@ var copy = function(path, targetPath) {
   var target = fs.createWriteStream(targetPath);
   var original = fs.createReadStream(path);
   target.once('open', function(fd){
-      util.pump(original, target);
+      original.pipe(target);
   });
 }
 
