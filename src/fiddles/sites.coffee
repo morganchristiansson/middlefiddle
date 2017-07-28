@@ -6,28 +6,28 @@
 # google.com.coffee will run on any request to google.com as well as www.google.com
 #
 fs = require 'fs'
-path = require 'path'
+fs = require 'fs'
 _ = require 'underscore'
 Mf = require '../index'
 sitesDir = Mf.config.mfDir + '/sites'
 siteMiddlewares = {}
 
 # To reload middlewares, simple press Ctrl-R
-stdin = process.openStdin()
-require('tty').setRawMode(true)
-
-stdin.on 'keypress', (chunk, key) ->
-  if (key && key.ctrl && key.name == 'r')
-    console.log("Reloading Middleware")
-    loadMiddlewares()
-  if (key && key.ctrl && key.name == 'c')
-    process.exit()
+# process.openStdin()
+# process.stdin.setRawMode(true)
+#
+# process.stdin.on 'keypress', (chunk, key) ->
+#   if (key && key.ctrl && key.name == 'r')
+#     console.log("Reloading Middleware")
+#     loadMiddlewares()
+#   if (key && key.ctrl && key.name == 'c')
+#     process.exit()
 
 # Looks in '/sites' inside you .middlefiddle directory
 # Matches to the host
 loadMiddlewares = () ->
   siteMiddlewares = {}
-  return unless path.existsSync(sitesDir)
+  return unless fs.existsSync(sitesDir)
   for site in fs.readdirSync(sitesDir)
     loadSiteMiddleware(site)
     watchMiddleware(site)

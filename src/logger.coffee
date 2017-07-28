@@ -1,4 +1,3 @@
-sys = require('util')
 colors = require('colors')
 verbosity = ()->
   switch(process.env['LOGLEVEL'])
@@ -17,14 +16,13 @@ level = verbosity()
 module.exports =
   debug: (msg) ->
     if level >= 3
-      sys.puts(msg)
+      console.log(msg)
   info: (msg) ->
     if level >= 2
-      sys.puts(msg.green)
+      console.log(msg.green)
   warn: (msg) ->
     if level >= 1
-      sys.puts("WARNING: #{msg}".magenta)
+      console.log("WARNING: #{msg}".magenta)
   error: (msg) ->
     if level >= 0
-      sys.puts("ERROR: #{msg}".red)
-
+      console.log("ERROR: #{msg}".red)

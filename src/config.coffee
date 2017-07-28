@@ -1,5 +1,5 @@
 _ = require('underscore')
-path = require('path')
+fs = require('fs')
 homeDir = process.env['HOME']
 defaultMfDir = homeDir + "/.middlefiddle"
 mfDir = null
@@ -14,7 +14,7 @@ mfPaths = [
 ]
 
 for mfPath in mfPaths
-  if path.existsSync(mfPath)
+  if fs.existsSync(mfPath)
     mfDir = mfPath
     break
 unless mfDir
