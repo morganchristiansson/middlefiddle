@@ -66,4 +66,4 @@ exports.middleware = () ->
     else
       next()
 
-  [siteMiddleware, Mf.live_logger()]
+  [siteMiddleware]
