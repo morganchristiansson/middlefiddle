@@ -19,6 +19,7 @@ exports.createProxy = (middlewares...) ->
 class exports.Proxy extends HttpProxy
 
   hijackSsl: (headers, c) ->
+    log.info 'SSL'
     match = headers.match("CONNECT +([^:]+):([0-9]+).*")
     host = match[1]
     port = match[2]
@@ -27,35 +28,39 @@ class exports.Proxy extends HttpProxy
       pair.on 'error', (err) ->
         console.log err
       httpServer = new http.Server
-      httpServer.addListener 'request', @handle
+      httpServer.on 'request', @handle
       cleartext = pipe(pair, c)
       http._connectionListener.call(this, cleartext)
       @httpAllowHalfOpen = false;
       c.write("HTTP/1.0 200 Connection established\r\nProxy-agent: MiddleFiddle\r\n\r\n")
 
   hijackHttp: (headers, c) ->
+    log.info 'HTTP'
     httpServer = new http.Server
-    httpServer.addListener 'request', @handle
+    httpServer.on 'request', @handle
     http._connectionListener.call(this, c)
     @httpAllowHalfOpen = false;
+    log.info 'HTTP\'d'
 
   listen: (port) ->
     tlsServer = net.createServer (c) =>
       headers = ''
       data = []
-      state = STATES.UNCONNECTED
-      c.addListener 'connect', ->
-        state = STATES.CONNECTING
-      c.addListener 'data', (data) =>
+      state = STATES.CONNECTING
+      log.info("CONNECT")
+      c.on 'data', (data) =>
+        log.info("DATA")
         if (state != STATES.CONNECTED)
           headers += data.toString()
           if headers.match("\r\n\r\n")
             state = STATES.CONNECTED
+            log.info("CONNECTED")
             if (headers.match(/^CONNECT/))
               @hijackSsl(headers, c)
             else
               @hijackHttp(headers, c)
     tlsServer.listen(port)
+    log.info("LISTENING")
 
 
 pipe = (pair, socket) ->
